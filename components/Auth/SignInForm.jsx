@@ -7,6 +7,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
+import FormData from "form-data";
 
 import { authRequests } from "../../utils/axiosRequests";
 
@@ -20,6 +21,7 @@ function SignInForm() {
   });
 
   const router = useRouter()
+  const formdata = new FormData();
   const { email, password } = userDetail;
 
   const handleChange = (event) => {
@@ -34,7 +36,7 @@ function SignInForm() {
 
   const handleSubmit = async () => {
     try {
-      const user = await authRequests(userDetail,"login")
+      const user = await authRequests(userDetail,"login", formdata)
       sessionStorage.setItem('token', user.token)
       alert("Successfully registered")
       router.push('/')
