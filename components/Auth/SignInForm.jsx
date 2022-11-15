@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import React from "react";
+import React, { useEffect } from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
@@ -12,17 +12,26 @@ import FormData from "form-data";
 import { authRequests } from "../../utils/axiosRequests";
 
 import Container from "../Container";
-import { useRouter }  from "next/router";
+import { useRouter } from "next/router";
 
 function SignInForm() {
   const [userDetail, setUserDetail] = React.useState({
     email: "",
     password: "",
   });
+  const [disable, setDisable] = React.useState(true);
 
-  const router = useRouter()
+  const router = useRouter();
   const formdata = new FormData();
   const { email, password } = userDetail;
+
+  useEffect(() => {
+    if (email.includes("@") && password.length >= 6) {
+      setDisable(false);
+    } else {
+      setDisable(true);
+    }
+  }, [email, password]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -36,13 +45,15 @@ function SignInForm() {
 
   const handleSubmit = async () => {
     try {
-      const user = await authRequests(userDetail,"login", formdata)
-      sessionStorage.setItem('token', user.token)
-      alert("Successfully registered")
-      router.push('/')
+      const user = await authRequests(userDetail, "login", formdata);
+      sessionStorage.setItem("token", user.token);
+      sessionStorage.setItem("name", user.user.name);
+      sessionStorage.setItem("id", user.user.id);
+      alert("Successfully Logged In");
+      router.push("/");
     } catch (error) {
       console.log(error, "error");
-      alert(error)
+      alert(error);
     }
   };
 
@@ -135,7 +146,12 @@ function SignInForm() {
                     </Link>
                   </Typography>
                 </Box>
-                <Button onClick={handleSubmit} size="large" variant="contained">
+                <Button
+                  disabled={disable}
+                  onClick={handleSubmit}
+                  size="large"
+                  variant="contained"
+                >
                   Login
                 </Button>
               </Box>

@@ -1,9 +1,11 @@
 import { Typography, Box } from '@mui/material'
 import Head from 'next/head'
+import { Router } from 'next/router'
 import WithFluidLayoutAndNoSidebar from '../components/WithFluidLayoutAndNoSidebar/WithFluidLayoutAndNoSidebar'
 import styles from '../styles/Home.module.css'
 
-export default function Home(props) {
+
+export default function Home() {
   return (
     <Box className={styles.container}>
       <Head>

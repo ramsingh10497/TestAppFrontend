@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
@@ -15,18 +15,28 @@ import { authRequests } from "../../utils/axiosRequests";
 import Container from "../Container";
 
 function SignUpForm() {
-  const [userDetail, setUserDetail] = React.useState({
+  const userState = {
     name: "",
     email: "",
     password: "",
-    phone: 0,
-    mobile: 0,
-    zipcode: 0,
-  });
+    phone: "",
+    mobile: "",
+    zipcode: "",
+  }
+  const [userDetail, setUserDetail] = useState({...userState});
+  const [disable, setDisable] = useState(true);
   const formdata = new FormData();
 
   const router = useRouter();
   const { name, email, password, phone, mobile, zipcode } = userDetail;
+
+  useEffect(() => {
+    if (email.includes("@") && password.length >= 6 && mobile.length == 10 && zipcode.length == 6) {
+      setDisable(false);
+    } else {
+      setDisable(true);
+    }
+  }, [email, password, mobile, zipcode]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -50,10 +60,14 @@ function SignUpForm() {
     try {
       const user = await authRequests(userDetail, "register", formdata);
       sessionStorage.setItem("token", user.token);
-      alert("Successfully registered")
+      sessionStorage.setItem("name", user.user.name);
+      sessionStorage.setItem("id", user.user.id);
+      alert("Successfully registered");
+      setUserDetail({...userState})
       router.push("/");
     } catch (error) {
       console.log(error, "error");
+      setUserDetail({...userState})
       alert(error);
     }
   };
@@ -61,7 +75,7 @@ function SignUpForm() {
   return (
     <Box bgcolor="alternate.main">
       <Container maxWidth={800}>
-        <Box marginBottom={4}>
+        <Box marginBottom={2}>
           <Typography
             variant="h4"
             sx={{
@@ -72,7 +86,7 @@ function SignUpForm() {
           </Typography>
         </Box>
         <Card sx={{ p: { xs: 4, md: 6 } }}>
-          <Grid container spacing={4}>
+          <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="subtitle2" sx={{ marginBottom: 2 }}>
                 Enter your name
@@ -82,6 +96,7 @@ function SignUpForm() {
                 variant="outlined"
                 name="name"
                 fullWidth
+                size="small"
                 value={name}
                 onChange={handleChange}
               />
@@ -91,10 +106,13 @@ function SignUpForm() {
                 Enter your email
               </Typography>
               <TextField
-                label="Email *"
+                label="Email"
                 variant="outlined"
                 name="email"
                 fullWidth
+                size="small"
+                required
+                error={!email.includes("@")}
                 value={email}
                 onChange={handleChange}
               />
@@ -104,11 +122,14 @@ function SignUpForm() {
                 Enter your password
               </Typography>
               <TextField
-                label="Password *"
+                label="Password"
                 variant="outlined"
                 name="password"
                 type="password"
                 fullWidth
+                size="small"
+                required
+                error={password.length <= 0}
                 value={password}
                 onChange={handleChange}
               />
@@ -123,6 +144,7 @@ function SignUpForm() {
                 name="phone"
                 type="number"
                 fullWidth
+                size="small"
                 value={phone}
                 onChange={handleChange}
               />
@@ -132,11 +154,14 @@ function SignUpForm() {
                 Enter your mobile number
               </Typography>
               <TextField
-                label="Mobile *"
+                label="Mobile"
                 variant="outlined"
                 name="mobile"
                 type="number"
                 fullWidth
+                required
+                error={mobile.length <= 9 || mobile.length > 10}
+                size="small"
                 value={mobile}
                 onChange={handleChange}
               />
@@ -146,11 +171,14 @@ function SignUpForm() {
                 Enter your zipcode
               </Typography>
               <TextField
-                label="Zipcode *"
+                label="Zipcode"
                 variant="outlined"
                 name="zipcode"
                 type="number"
                 fullWidth
+                size="small"
+                required
+                error={!zipcode.length === 6}
                 value={zipcode}
                 onChange={handleChange}
               />
@@ -165,6 +193,7 @@ function SignUpForm() {
                 name="picture"
                 type="file"
                 fullWidth
+                size="small"
                 onChange={handleFile}
               />
             </Grid>
@@ -191,7 +220,12 @@ function SignUpForm() {
                     </Link>
                   </Typography>
                 </Box>
-                <Button onClick={handleSubmit} size="large" variant="contained">
+                <Button
+                  disabled={disable}
+                  onClick={handleSubmit}
+                  size="large"
+                  variant="contained"
+                >
                   Sign up
                 </Button>
               </Box>

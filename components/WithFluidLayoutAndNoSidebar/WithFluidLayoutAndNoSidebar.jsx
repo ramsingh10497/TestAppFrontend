@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { alpha, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
@@ -28,6 +28,12 @@ function ChildMock() {
 
 function WithFluidLayoutAndNoSidebar() {
   const theme = useTheme()
+  const [name, setName] = useState("")
+  const [id, setId] = useState("")
+  useEffect(() => {
+    setName(sessionStorage.getItem('name'))
+    setId(sessionStorage.getItem('id'))
+  },[])
   return (
     <Box>
       <AppBar
@@ -39,7 +45,7 @@ function WithFluidLayoutAndNoSidebar() {
         elevation={0}
       >
         <Container maxWidth={1} paddingY={{ xs: 1, sm: 1.5 }}>
-          <Topbar />
+          <Topbar name={name} id={id}/>
         </Container>
       </AppBar>
       <main>
