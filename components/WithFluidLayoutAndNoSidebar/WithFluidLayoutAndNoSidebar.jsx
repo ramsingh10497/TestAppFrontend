@@ -1,15 +1,24 @@
-import React, { useEffect, useState } from 'react'
-import { alpha, useTheme } from '@mui/material/styles'
-import Box from '@mui/material/Box'
-import Divider from '@mui/material/Divider'
-import AppBar from '@mui/material/AppBar'
+import React, { useEffect, useState } from "react";
+import { alpha, useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
+import AppBar from "@mui/material/AppBar";
 
-import Container from '../Container'
-import Topbar from './components/Topbar/Topbar'
-import Footer from './components/Footer/Footer'
+import Container from "../Container";
+import Topbar from "./components/Topbar/Topbar";
+import Footer from "./components/Footer/Footer";
+import { Typography } from "@mui/material";
 
-function ChildMock() {
-  const theme = useTheme()
+function ChildMock({ loggedUsers }) {
+  const theme = useTheme();
+
+  const loggedUI = loggedUsers.map((user, index) => {
+    return (
+      <Box key={index}>
+         <Typography variant="h4">Name : {user.user.name}</Typography>
+      </Box>
+    )
+  })
   return (
     <Box p={4}>
       <Box
@@ -19,21 +28,26 @@ function ChildMock() {
         borderRadius={2}
         border={`2px solid ${theme.palette.divider}`}
         sx={{
-          borderStyle: 'dashed',
+          borderStyle: "dashed",
         }}
-      />
+      >
+        <Typography variant="h3" align="center">Logged In User</Typography>
+      {loggedUI}
+      </Box>
     </Box>
-  )
+  );
 }
 
-function WithFluidLayoutAndNoSidebar() {
-  const theme = useTheme()
-  const [name, setName] = useState("")
-  const [id, setId] = useState("")
+function WithFluidLayoutAndNoSidebar({ loggedUsers }) {
+  const theme = useTheme();
+  const [name, setName] = useState("");
+  const [id, setId] = useState("");
+
+  console.log(loggedUsers, "loggedUsers");
   useEffect(() => {
-    setName(sessionStorage.getItem('name'))
-    setId(sessionStorage.getItem('id'))
-  },[])
+    setName(sessionStorage.getItem("name"));
+    setId(sessionStorage.getItem("id"));
+  }, []);
   return (
     <Box>
       <AppBar
@@ -45,7 +59,7 @@ function WithFluidLayoutAndNoSidebar() {
         elevation={0}
       >
         <Container maxWidth={1} paddingY={{ xs: 1, sm: 1.5 }}>
-          <Topbar name={name} id={id}/>
+          <Topbar name={name} id={id} />
         </Container>
       </AppBar>
       <main>
@@ -53,7 +67,7 @@ function WithFluidLayoutAndNoSidebar() {
         <Box display="flex" flex="1 1 auto" overflow="hidden">
           <Box display="flex" flex="1 1 auto" overflow="hidden">
             <Box flex="1 1 auto" height="100%" overflow="auto">
-              <ChildMock />
+              <ChildMock loggedUsers={loggedUsers} />
               <Divider />
               {/* <Container paddingY={4}>
                 <Footer />
@@ -63,7 +77,7 @@ function WithFluidLayoutAndNoSidebar() {
         </Box>
       </main>
     </Box>
-  )
+  );
 }
 
-export default WithFluidLayoutAndNoSidebar
+export default WithFluidLayoutAndNoSidebar;

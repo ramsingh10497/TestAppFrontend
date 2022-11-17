@@ -9,6 +9,8 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuIcon from "@mui/icons-material/Menu";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Router from "next/router";
+import axios from "axios";
+import { logoutPath } from "../../../../utils/apiPaths";
 
 
 function Topbar({ name, id }) {
@@ -25,8 +27,12 @@ function Topbar({ name, id }) {
   };
 
   const handleReset = () => {
-    sessionStorage.clear()
-    Router.push("/login")
+    axios.get(logoutPath).then((res) => {
+      sessionStorage.clear()
+      Router.push("/login")
+    }).catch((err) => {
+      alert("Something Wrong")
+    })
   }
 
   return (

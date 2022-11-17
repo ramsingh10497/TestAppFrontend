@@ -1,11 +1,31 @@
-import { Typography, Box } from '@mui/material'
-import Head from 'next/head'
-import { Router } from 'next/router'
-import WithFluidLayoutAndNoSidebar from '../components/WithFluidLayoutAndNoSidebar/WithFluidLayoutAndNoSidebar'
-import styles from '../styles/Home.module.css'
-
+import { Typography, Box } from "@mui/material";
+import axios from "axios";
+import Head from "next/head";
+import { Router } from "next/router";
+import { useEffect, useState } from "react";
+import WithFluidLayoutAndNoSidebar from "../components/WithFluidLayoutAndNoSidebar/WithFluidLayoutAndNoSidebar";
+import styles from "../styles/Home.module.css";
+import { loggedUsersFetchPath } from "../utils/apiPaths";
 
 export default function Home() {
+  const [loggedUsers, setLoggedUser] = useState([]);
+  useEffect(() => {
+    axios
+    .get(loggedUsersFetchPath)
+    .then((res) => {
+      const data =Object.values(res.data)
+      data.forEach((item) => {
+        let parseData = JSON.parse(item).passport
+        parseData && setLoggedUser((user) => [...user, parseData]);
+      });
+      
+    })
+    .catch((err) => {
+      console.log(err, "husdi");
+    });
+  },[])
+
+  
   return (
     <Box className={styles.container}>
       <Head>
@@ -14,8 +34,8 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Box>
-        <WithFluidLayoutAndNoSidebar />
+        <WithFluidLayoutAndNoSidebar loggedUsers={loggedUsers} />
       </Box>
     </Box>
-  )
+  );
 }
