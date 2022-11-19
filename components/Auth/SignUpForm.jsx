@@ -47,14 +47,6 @@ function SignUpForm() {
       };
     });
   };
-  const handleFile = (event) => {
-    const files = Array.from(event.target.files);
-    const [file] = files;
-    // formdata.append(
-    //   "picture",
-    //   "/home/ram/Pictures/Screenshot from 2022-10-29 11-12-18.png"
-    // );
-  };
 
   const handleSubmit = async () => {
     try {
@@ -181,20 +173,6 @@ function SignUpForm() {
                 error={!zipcode.length === 6}
                 value={zipcode}
                 onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="subtitle2" sx={{ marginBottom: 2 }}>
-                Select profile pic
-              </Typography>
-              <TextField
-                // label="Profile"
-                variant="outlined"
-                name="picture"
-                type="file"
-                fullWidth
-                size="small"
-                onChange={handleFile}
               />
             </Grid>
             <Grid item container xs={12}>
