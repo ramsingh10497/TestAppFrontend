@@ -12,10 +12,10 @@ import { Typography } from "@mui/material";
 function ChildMock({ loggedUsers }) {
   const theme = useTheme();
 
-  const loggedUI = loggedUsers.map((user, index) => {
+  const loggedUI = loggedUsers?.map((user, index) => {
     return (
       <Box key={index}>
-         <Typography variant="h4">Name : {user.user.name}</Typography>
+         <Typography variant="h4">Name : {user.name}</Typography>
       </Box>
     )
   })

@@ -13,19 +13,18 @@ export default function Home() {
     axios
     .get(loggedUsersFetchPath)
     .then((res) => {
-      const data =Object.values(res.data)
-      data.forEach((item) => {
-        let parseData = JSON.parse(item).passport
-        parseData && setLoggedUser((user) => [...user, parseData]);
-      });
-      
+      const id = sessionStorage.getItem('id');
+      let response = res.data
+      let filteredData = response?.filter((item) => {
+        return item.id != id
+      })
+      setLoggedUser(filteredData)
     })
     .catch((err) => {
       console.log(err, "husdi");
     });
   },[])
 
-  
   return (
     <Box className={styles.container}>
       <Head>

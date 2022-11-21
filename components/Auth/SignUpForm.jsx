@@ -31,7 +31,7 @@ function SignUpForm() {
   const { name, email, password, phone, mobile, zipcode } = userDetail;
 
   useEffect(() => {
-    if (email.includes("@") && password.length >= 6 && mobile.length == 10 && zipcode.length == 6) {
+    if (email.includes("@") && password.length >= 6 && mobile.length == 10 && zipcode.length == 5) {
       setDisable(false);
     } else {
       setDisable(true);
@@ -56,7 +56,7 @@ function SignUpForm() {
       sessionStorage.setItem("id", user.user.id);
       alert("Successfully registered");
       setUserDetail({...userState})
-      router.push("/");
+      router.push("/login");
     } catch (error) {
       console.log(error, "error");
       setUserDetail({...userState})
