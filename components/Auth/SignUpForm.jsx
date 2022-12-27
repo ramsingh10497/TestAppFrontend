@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
@@ -22,8 +22,8 @@ function SignUpForm() {
     phone: "",
     mobile: "",
     zipcode: "",
-  }
-  const [userDetail, setUserDetail] = useState({...userState});
+  };
+  const [userDetail, setUserDetail] = useState({ ...userState });
   const [disable, setDisable] = useState(true);
   const formdata = new FormData();
 
@@ -31,7 +31,12 @@ function SignUpForm() {
   const { name, email, password, phone, mobile, zipcode } = userDetail;
 
   useEffect(() => {
-    if (email.includes("@") && password.length >= 6 && mobile.length == 10 && zipcode.length == 5) {
+    if (
+      email.includes("@") &&
+      password.length >= 6 &&
+      mobile.length == 10 &&
+      zipcode.length == 5
+    ) {
       setDisable(false);
     } else {
       setDisable(true);
@@ -48,6 +53,17 @@ function SignUpForm() {
     });
   };
 
+  const handleSelect = (e) => {
+    const { name, files } = event.target;
+    setUserDetail((prevState) => {
+      return {
+        ...prevState,
+        [name]: files[0],
+      };
+    });
+  }
+
+
   const handleSubmit = async () => {
     try {
       const user = await authRequests(userDetail, "register", formdata);
@@ -55,11 +71,11 @@ function SignUpForm() {
       sessionStorage.setItem("name", user.user.name);
       sessionStorage.setItem("id", user.user.id);
       alert("Successfully registered");
-      setUserDetail({...userState})
+      setUserDetail({ ...userState });
       router.push("/login");
     } catch (error) {
       console.log(error, "error");
-      setUserDetail({...userState})
+      setUserDetail({ ...userState });
       alert(error);
     }
   };
@@ -173,6 +189,18 @@ function SignUpForm() {
                 error={!zipcode.length === 6}
                 value={zipcode}
                 onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="subtitle2" sx={{ marginBottom: 2 }}>
+                Upload your Picture
+              </Typography>
+              <input
+                id="btn-upload"
+                name="picture"
+                type="file"
+                accept="image/*"
+                onChange={handleSelect}
               />
             </Grid>
             <Grid item container xs={12}>
